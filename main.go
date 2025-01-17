@@ -1,7 +1,12 @@
 package main
 
-import "fmt"
+import (
+	"log"
+
+	"github.com/mworks4905/go-logger/internal/server"
+)
 
 func main() {
-	fmt.Println("hello world")
+	svr := server.NewHTTPServer(":8080")
+	log.Fatal(svr.ListenAndServe())
 }
