@@ -48,6 +48,7 @@ func (s *store) Append(p []byte) (n uint64, pos uint64, err error) {
 	}
 	w += lenWidth
 	s.size += uint64(w)
+	// return the number of bytes writen, the position of the record in the store file, and error
 	return uint64(w), pos, nil
 }
 
@@ -74,7 +75,7 @@ func (s *store) ReadAt(p []byte, off int64) (int, error) {
 	if err := s.buf.Flush(); err != nil {
 		return 0, err
 	}
-	return s.File.ReadAt(p, int64(off))
+	return s.File.ReadAt(p, off)
 }
 
 func (s *store) Close() error {

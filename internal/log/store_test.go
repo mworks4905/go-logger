@@ -1,7 +1,6 @@
 package log
 
 import (
-	"io/ioutil"
 	"os"
 	"testing"
 
@@ -14,14 +13,14 @@ var (
 )
 
 func TestStoreAppendRead(t *testing.T) {
-	f, err := ioutil.TempFile("", "store_append_read_test")
+	f, err := os.CreateTemp("", "store_append_read_test")
 	require.NoError(t, err)
 	defer os.Remove(f.Name())
 
 	s, err := newStore(f)
 	require.NoError(t, err)
-
 	testAppend(t, s)
+	t.Log(s.size)
 	testRead(t, s)
 	testReadAt(t, s)
 
@@ -60,6 +59,7 @@ func testReadAt(t *testing.T, s *store) {
 		off += int64(n)
 
 		size := enc.Uint64(b)
+		b = make([]byte, size)
 		n, err = s.ReadAt(b, off)
 		require.NoError(t, err)
 		require.Equal(t, write, b)
@@ -69,7 +69,7 @@ func testReadAt(t *testing.T, s *store) {
 }
 
 func TestStoreClose(t *testing.T) {
-	f, err := ioutil.TempFile("", "store_close_test")
+	f, err := os.CreateTemp("", "store_close_test")
 	require.NoError(t, err)
 	defer os.Remove(f.Name())
 	s, err := newStore(f)
